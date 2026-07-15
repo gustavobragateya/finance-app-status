@@ -28,7 +28,6 @@
   html, body { margin: 0; height: 100%; }
   body { background: #EFE9E1; font-family: var(--sans); color: var(--ink); }
 
-  /* ---- desktop stage & device chrome ---- */
   .stage { min-height: 100%; display: flex; flex-direction: column; align-items: center; }
   .chrome { display: none; }
   .device { width: 100%; height: 100dvh; }
@@ -42,11 +41,8 @@
     }
     .chrome button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
     .device {
-      width: 393px; height: 780px; background: #111;
-      border-radius: 54px; padding: 10px;
-      box-shadow: 0 30px 70px rgba(43,50,64,0.35);
-      transition: width 0.3s, height 0.3s;
-      position: relative;
+      width: 393px; height: 780px; background: #111; border-radius: 54px; padding: 10px;
+      box-shadow: 0 30px 70px rgba(43,50,64,0.35); transition: width 0.3s, height 0.3s; position: relative;
     }
     .device::after {
       content: ""; position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
@@ -58,54 +54,98 @@
     .device.tablet .app { border-radius: 24px; }
   }
 
-  /* ---- the app ---- */
-  .app {
-    background: var(--bg); height: 100%; overflow: hidden;
-    display: flex; flex-direction: column; position: relative;
-  }
+  .app { background: var(--bg); height: 100%; overflow: hidden; display: flex; flex-direction: column; position: relative; }
   .screens { flex: 1; position: relative; overflow: hidden; }
   .scr {
-    position: absolute; inset: 0; display: none; flex-direction: column;
-    overflow-y: auto; padding: calc(1.25rem + env(safe-area-inset-top)) 1.35rem 1rem;
-    gap: 1.1rem;
+    position: absolute; inset: 0; display: none; flex-direction: column; overflow-y: auto;
+    padding: calc(1.15rem + env(safe-area-inset-top)) 1.35rem 1.2rem; gap: 1.05rem;
   }
   .scr.on { display: flex; animation: slide 0.28s ease; }
   @keyframes slide { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .scr.on { animation: none; } }
-  @media (min-width: 700px) { .scr { padding-top: 3.4rem; } }
+  @media (prefers-reduced-motion: reduce) { .scr.on { animation: none; } .drawer, .scrim { transition: none !important; } }
+  @media (min-width: 700px) { .scr { padding-top: 3.4rem; } .topbar { padding-top: 2.2rem; } }
 
-  .brand {
-    font-family: var(--display); font-weight: 600; font-size: 1.05rem;
-    color: var(--terra); letter-spacing: 0.01em;
+  /* top bar + drawer */
+  .topbar {
+    display: flex; align-items: center; gap: 0.8rem; flex-shrink: 0;
+    padding: calc(0.9rem + env(safe-area-inset-top)) 1.35rem 0.2rem;
   }
-  h1 { font-family: var(--display); font-weight: 600; font-size: 1.7rem; margin: 0; letter-spacing: -0.01em; }
-  .sub { color: var(--muted); font-size: 0.88rem; margin: -0.75rem 0 0; }
+  .burger { background: none; border: none; cursor: pointer; padding: 0.2rem; display: flex; flex-direction: column; gap: 4px; }
+  .burger i { width: 20px; height: 2px; background: var(--ink); border-radius: 2px; display: block; }
+  .topbar .brand { font-family: var(--display); font-weight: 600; font-size: 1.02rem; color: var(--terra); }
 
-  .back {
-    background: none; border: none; color: var(--muted); font-family: var(--sans);
-    font-size: 0.85rem; padding: 0; text-align: left; cursor: pointer; width: fit-content;
+  .scrim {
+    position: absolute; inset: 0; background: rgba(43,50,64,0.35); opacity: 0;
+    pointer-events: none; transition: opacity 0.25s; z-index: 90;
   }
+  .scrim.on { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 82%; max-width: 320px;
+    background: var(--card); z-index: 100; transform: translateX(-102%);
+    transition: transform 0.28s ease; display: flex; flex-direction: column;
+    padding: calc(1.4rem + env(safe-area-inset-top)) 1.2rem 1.4rem;
+    border-radius: 0 24px 24px 0; gap: 0.4rem;
+  }
+  .drawer.on { transform: none; box-shadow: 24px 0 60px rgba(43,50,64,0.25); }
+  .drawer .dt { font-family: var(--display); font-size: 1.3rem; font-weight: 600; margin: 0 0 0.8rem; }
+  .ditem {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.6rem;
+    border-radius: 12px; cursor: pointer; border: none; background: none; text-align: left;
+    font-family: var(--sans); width: 100%;
+  }
+  .ditem:active, .ditem:hover { background: var(--bg); }
+  .ditem .st {
+    width: 26px; height: 26px; border-radius: 999px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 0.7rem;
+    background: var(--line); color: var(--muted);
+  }
+  .ditem.done .st { background: var(--sage-soft); color: var(--sage); }
+  .ditem.next .st { background: var(--terra-soft); color: var(--terra); }
+  .ditem div b { display: block; font-size: 0.9rem; color: var(--ink); font-weight: 600; }
+  .ditem div span { font-size: 0.72rem; color: var(--muted); }
+  .ditem.soon { opacity: 0.45; cursor: default; }
 
-  .mcard {
-    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
-    padding: 1.15rem 1.2rem; cursor: pointer; border-left: 4px solid var(--terra);
+  h1 { font-family: var(--display); font-weight: 600; font-size: 1.65rem; margin: 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 0.88rem; margin: -0.65rem 0 0; }
+  .back { background: none; border: none; color: var(--muted); font-family: var(--sans); font-size: 0.85rem; padding: 0; text-align: left; cursor: pointer; width: fit-content; }
+
+  /* home dashboard */
+  .progress {
+    background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+    padding: 1.3rem 1.3rem 1.15rem; display: flex; align-items: center; gap: 1.15rem;
     box-shadow: 0 2px 10px rgba(43,50,64,0.04);
   }
-  .mcard:active { transform: scale(0.985); }
-  .mcard .k {
+  .ring { width: 76px; height: 76px; flex-shrink: 0; position: relative; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .val {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--terra);
+    font-variant-numeric: tabular-nums;
+  }
+  .progress div b { font-family: var(--display); font-size: 1.05rem; font-weight: 600; display: block; }
+  .progress div span { font-size: 0.8rem; color: var(--muted); line-height: 1.45; display: block; margin-top: 0.15rem; }
+
+  .k {
     font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em;
     color: var(--terra); font-weight: 700;
   }
-  .mcard b { display: block; font-family: var(--display); font-size: 1.25rem; font-weight: 600; margin: 0.3rem 0 0.2rem; }
-  .mcard span { font-size: 0.85rem; color: var(--muted); }
-  .mcard.ghost { border-left-color: var(--line); opacity: 0.55; cursor: default; box-shadow: none; }
+  .mcard {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+    padding: 1.1rem 1.2rem; cursor: pointer; border-left: 4px solid var(--terra);
+    box-shadow: 0 2px 10px rgba(43,50,64,0.04);
+  }
+  .mcard:active { transform: scale(0.985); }
+  .mcard b { display: block; font-family: var(--display); font-size: 1.2rem; font-weight: 600; margin: 0.3rem 0 0.15rem; }
+  .mcard span { font-size: 0.84rem; color: var(--muted); }
+  .mcard.sage { border-left-color: var(--sage); }
+  .mcard.sage .k { color: var(--sage); }
 
+  /* module screen */
   .cover {
     border-radius: 20px; aspect-ratio: 16/10; overflow: hidden; position: relative;
     background: linear-gradient(150deg, #F0E4D8, #E3D5C5 55%, #D8C6B2);
-    border: 1px solid var(--line); flex-shrink: 0;
+    border: 1px solid var(--line); flex-shrink: 0; text-decoration: none;
     display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.55rem;
-    text-decoration: none;
   }
   .cover .play {
     width: 52px; height: 52px; border-radius: 999px; background: var(--terra); color: #fff;
@@ -113,29 +153,25 @@
     box-shadow: 0 8px 20px rgba(192,92,66,0.4); padding-left: 4px;
   }
   .cover span { font-size: 0.75rem; color: #7C6F5E; font-weight: 500; }
-
-  .quote {
-    font-family: var(--display); font-size: 1.02rem; font-weight: 500; line-height: 1.45;
-    color: var(--ink); margin: 0; padding: 0 0.2rem;
-  }
+  .quote { font-family: var(--display); font-size: 1rem; font-weight: 500; line-height: 1.45; margin: 0; padding: 0 0.15rem; }
   .quote em { color: var(--terra); font-style: normal; }
 
   .field label { font-size: 0.78rem; color: var(--muted); display: block; margin-bottom: 0.4rem; font-weight: 500; }
   .field input {
     width: 100%; background: var(--card); border: 1.5px solid var(--line); border-radius: 14px;
-    font-family: var(--display); font-size: 1.5rem; font-weight: 600; color: var(--ink);
-    padding: 0.7rem 0.9rem; font-variant-numeric: tabular-nums;
+    font-family: var(--display); font-size: 1.45rem; font-weight: 600; color: var(--ink);
+    padding: 0.68rem 0.9rem; font-variant-numeric: tabular-nums;
   }
   .field input:focus { outline: none; border-color: var(--terra); }
   details { font-size: 0.8rem; color: var(--muted); }
   details summary { cursor: pointer; font-weight: 500; }
   details .field { margin-top: 0.6rem; }
-  details input { font-size: 1.1rem !important; width: 110px !important; }
+  details input { font-size: 1.05rem !important; width: 110px !important; }
 
   .cta {
     font-family: var(--sans); background: var(--terra); color: #fff; font-weight: 700;
     font-size: 1rem; border: none; border-radius: 16px; padding: 1rem; cursor: pointer;
-    box-shadow: 0 10px 24px rgba(192,92,66,0.3); margin-top: auto;
+    box-shadow: 0 10px 24px rgba(192,92,66,0.3); margin-top: auto; flex-shrink: 0;
   }
   .cta:active { transform: scale(0.98); }
   .cta.quiet { background: transparent; color: var(--terra); border: 1.5px solid var(--terra-soft); box-shadow: none; margin-top: 0; }
@@ -144,7 +180,7 @@
   .reveal { text-align: center; margin: auto 0; position: relative; }
   .reveal .lbl { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
   .reveal .big {
-    font-family: var(--display); font-size: 2.6rem; font-weight: 700; color: var(--terra);
+    font-family: var(--display); font-size: 2.5rem; font-weight: 700; color: var(--terra);
     margin: 0.3rem 0 0.4rem; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
   }
   .reveal .ctx { font-size: 0.83rem; color: var(--muted); max-width: 32ch; margin: 0 auto; line-height: 1.5; }
@@ -160,7 +196,7 @@
   }
   .hcard .d { font-size: 0.7rem; color: var(--muted); display: block; }
   .hcard .r { font-size: 0.86rem; margin: 0.1rem 0 0; }
-  .hcard b { font-family: var(--display); color: var(--terra); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+  .hcard b { font-family: var(--display); color: var(--terra); font-size: 1.02rem; font-variant-numeric: tabular-nums; }
   .hcard .del { background: none; border: none; color: #C9C1B4; font-size: 1rem; cursor: pointer; padding: 0.2rem 0 0.2rem 0.7rem; }
   .empty { text-align: center; color: var(--muted); font-size: 0.85rem; margin: auto 0; line-height: 1.6; }
   .empty .art { font-family: var(--display); font-size: 2rem; color: #D8CFC0; display: block; margin-bottom: 0.4rem; }
@@ -190,50 +226,47 @@
   </div>
   <div class="device" id="device">
     <div class="app">
+
+      <div class="scrim" id="scrim"></div>
+      <aside class="drawer" id="drawer">
+        <p class="dt">Módulos</p>
+        <div id="dlist"></div>
+      </aside>
+
+      <div class="topbar">
+        <button class="burger" id="burger" aria-label="abrir módulos"><i></i><i></i><i></i></button>
+        <span class="brand">Meu Número</span>
+      </div>
+
       <div class="screens">
 
         <section class="scr on" id="s-home">
-          <p class="brand">Meu Número</p>
-          <h1>Módulos</h1>
-          <p class="sub">Um vídeo, uma ferramenta. Os teus números.</p>
-          <div class="mcard" id="open-fire">
-            <span class="k">Novo · 1:15</span>
-            <b>Fire Number</b>
-            <span>Quanto você precisa ter investido para viver de renda</span>
+          <h1 id="greet">Boa noite</h1>
+          <p class="sub">A tua jornada com a Thamy</p>
+          <div class="progress">
+            <div class="ring">
+              <svg width="76" height="76" viewBox="0 0 76 76">
+                <circle cx="38" cy="38" r="32" fill="none" stroke="#ECE5DB" stroke-width="7"/>
+                <circle id="arc" cx="38" cy="38" r="32" fill="none" stroke="#C05C42" stroke-width="7"
+                        stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201"/>
+              </svg>
+              <span class="val" id="pct">0%</span>
+            </div>
+            <div>
+              <b id="pTitle">Começa agora</b>
+              <span id="pDetail">0 de 1 vídeos concluídos</span>
+            </div>
           </div>
-          <div class="mcard ghost">
-            <span class="k">Em breve</span>
-            <b>Próximo vídeo</b>
-            <span>cada post da Thamy vira um módulo aqui</span>
-          </div>
+          <div id="continue"></div>
+          <div id="nextup"></div>
         </section>
 
-        <section class="scr" id="s-module">
-          <button class="back" data-go="s-home">‹ Módulos</button>
-          <h1>Fire Number</h1>
-          <a class="cover" href="https://www.instagram.com/reel/DaiR-8pMd2P/" target="_blank" rel="noopener">
-            <span class="play">▶</span>
-            <span>assistir o vídeo da Thamy</span>
-          </a>
-          <p class="quote">"Aposentadoria não é uma idade, <em>é um número</em>. Renda mensal × 12 × 25."</p>
-          <div class="field">
-            <label for="renda">Renda mensal desejada</label>
-            <input id="renda" type="text" inputmode="numeric" placeholder="R$ 15.000" autocomplete="off">
-          </div>
-          <details>
-            <summary>Avançado: taxa de retirada</summary>
-            <div class="field">
-              <label for="taxa">% ao ano</label>
-              <input id="taxa" type="text" inputmode="decimal" value="4">
-            </div>
-          </details>
-          <button class="cta" id="ver" disabled>Ver meu número</button>
-        </section>
+        <section class="scr" id="s-module"></section>
 
         <section class="scr" id="s-result">
           <button class="back" data-go="s-module">‹ Voltar</button>
           <div class="reveal">
-            <p class="lbl">O teu Fire Number</p>
+            <p class="lbl" id="rlbl"></p>
             <p class="big" id="big">R$ 0</p>
             <p class="ctx" id="ctx"></p>
             <span class="chip" id="chip"></span>
@@ -244,7 +277,6 @@
         </section>
 
         <section class="scr" id="s-numbers">
-          <p class="brand">Meu Número</p>
           <h1>Meus números</h1>
           <p class="sub">As tuas simulações salvas</p>
           <div class="hist" id="hist"></div>
@@ -253,7 +285,7 @@
 
       </div>
       <nav class="tabs">
-        <button id="t-home" class="on"><span class="ic">◈</span>Módulos</button>
+        <button id="t-home" class="on"><span class="ic">◈</span>Início</button>
         <button id="t-numbers"><span class="ic">✦</span>Meus números</button>
       </nav>
     </div>
@@ -261,10 +293,47 @@
 </div>
 
 <script>
+  /* ============ MODULE REGISTRY ============
+     One entry per Thamy video. Adding a video = adding one object here.
+     Every screen (drawer, home, module, result) renders from this data. */
+  const MODULES = [
+    {
+      id: 'fire-number',
+      title: 'Fire Number',
+      tagline: 'Quanto você precisa ter investido para viver de renda',
+      video: 'https://www.instagram.com/reel/DaiR-8pMd2P/',
+      duration: '1:15',
+      quote: '"Aposentadoria não é uma idade, <em>é um número</em>. Renda mensal × 12 × 25."',
+      resultLabel: 'O teu Fire Number',
+      fields: [
+        { key: 'renda', label: 'Renda mensal desejada', type: 'money', placeholder: 'R$ 15.000' },
+      ],
+      advanced: { key: 'taxa', label: '% ao ano (taxa de retirada)', value: 4 },
+      compute(v) {
+        const w = v.taxa || 4;
+        return {
+          total: Math.round(v.renda * 12 / (w / 100)),
+          ctx: 'para viver com ' + fmt.format(v.renda) + ' por mês, retirando ' + fmtN.format(w) + '% ao ano',
+          chip: 'renda × 12 × ' + fmtN.format(Math.round(1200 / w)),
+        };
+      },
+      status: 'live',
+    },
+    {
+      id: 'proximo',
+      title: 'Próximo vídeo',
+      tagline: 'cada post da Thamy vira um módulo aqui',
+      status: 'soon',
+    },
+  ];
+
   const $ = (id) => document.getElementById(id);
   const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
   const fmtN = new Intl.NumberFormat('pt-BR');
-  let sim = null;
+  const KEY = 'meu-numero-v2';
+  const state = JSON.parse(localStorage.getItem(KEY) || '{"sims":[],"done":{},"last":null}');
+  const persist = () => localStorage.setItem(KEY, JSON.stringify(state));
+  let current = null, sim = null;
 
   /* navigation */
   function go(id) {
@@ -272,36 +341,99 @@
     $(id).classList.add('on');
     $('t-home').classList.toggle('on', id !== 's-numbers');
     $('t-numbers').classList.toggle('on', id === 's-numbers');
+    closeDrawer();
   }
   document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
-  $('t-home').addEventListener('click', () => go('s-home'));
-  $('t-numbers').addEventListener('click', () => { render(); go('s-numbers'); });
-  $('open-fire').addEventListener('click', () => go('s-module'));
+  $('t-home').addEventListener('click', () => { renderHome(); go('s-home'); });
+  $('t-numbers').addEventListener('click', () => { renderHist(); go('s-numbers'); });
 
-  /* device toggle (desktop) */
-  $('dv-phone').addEventListener('click', () => { $('device').classList.remove('tablet'); $('dv-phone').classList.add('on'); $('dv-tablet').classList.remove('on'); });
-  $('dv-tablet').addEventListener('click', () => { $('device').classList.add('tablet'); $('dv-tablet').classList.add('on'); $('dv-phone').classList.remove('on'); });
+  /* drawer */
+  const openDrawer = () => { $('drawer').classList.add('on'); $('scrim').classList.add('on'); };
+  const closeDrawer = () => { $('drawer').classList.remove('on'); $('scrim').classList.remove('on'); };
+  $('burger').addEventListener('click', openDrawer);
+  $('scrim').addEventListener('click', closeDrawer);
 
-  /* calculator */
-  const renda = $('renda'), taxa = $('taxa'), ver = $('ver');
-  renda.addEventListener('input', () => {
-    const raw = renda.value.replace(/[^\d]/g, '');
-    renda.value = raw ? 'R$ ' + fmtN.format(parseInt(raw, 10)) : '';
-    ver.disabled = !raw;
-  });
-  ver.addEventListener('click', () => {
-    const m = parseInt(renda.value.replace(/[^\d]/g, ''), 10);
-    const w = parseFloat(taxa.value.replace(',', '.')) || 4;
-    const total = Math.round(m * 12 / (w / 100));
-    sim = { m, w, total, ts: Date.now() };
-    $('ctx').textContent = 'para viver com ' + fmt.format(m) + ' por mês, retirando ' + fmtN.format(w) + '% ao ano';
-    $('chip').textContent = 'renda × 12 × ' + fmtN.format(Math.round(1200 / w)) ;
-    $('salvar').textContent = 'Salvar';
-    go('s-result');
-    countUp(total);
-    burst();
-    if (navigator.vibrate) navigator.vibrate([18, 40, 24]);
-  });
+  function renderDrawer() {
+    const live = MODULES.filter(m => m.status === 'live');
+    const nextId = live.find(m => !state.done[m.id])?.id;
+    $('dlist').innerHTML = '';
+    MODULES.forEach(m => {
+      const b = document.createElement('button');
+      b.className = 'ditem' + (m.status === 'soon' ? ' soon' : state.done[m.id] ? ' done' : m.id === nextId ? ' next' : '');
+      b.innerHTML = '<span class="st">' + (m.status === 'soon' ? '···' : state.done[m.id] ? '✓' : '▶') + '</span>' +
+        '<div><b>' + m.title + '</b><span>' + (m.status === 'soon' ? 'em breve' : m.duration + (state.done[m.id] ? ' · concluído' : '')) + '</span></div>';
+      if (m.status === 'live') b.addEventListener('click', () => openModule(m.id));
+      $('dlist').appendChild(b);
+    });
+  }
+
+  /* home dashboard */
+  function renderHome() {
+    const h = new Date().getHours();
+    $('greet').textContent = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+    const live = MODULES.filter(m => m.status === 'live');
+    const done = live.filter(m => state.done[m.id]).length;
+    const pct = live.length ? Math.round(done / live.length * 100) : 0;
+    $('pct').textContent = pct + '%';
+    $('arc').style.strokeDashoffset = 201 - (201 * pct / 100);
+    $('pTitle').textContent = done === 0 ? 'Começa agora' : done === live.length ? 'Tudo em dia!' : 'Continua firme';
+    $('pDetail').textContent = done + ' de ' + live.length + ' vídeo' + (live.length > 1 ? 's' : '') + ' concluído' + (done === 1 ? '' : 's');
+
+    const lastM = state.last && MODULES.find(m => m.id === state.last && m.status === 'live' && !state.done[m.id]);
+    $('continue').innerHTML = lastM
+      ? '<div class="mcard" id="cc"><span class="k">Continuar de onde paraste</span><b>' + lastM.title + '</b><span>' + lastM.tagline + '</span></div>'
+      : '';
+    if (lastM) $('cc').addEventListener('click', () => openModule(lastM.id));
+
+    const next = live.find(m => !state.done[m.id] && m.id !== (lastM && lastM.id));
+    $('nextup').innerHTML = next
+      ? '<div class="mcard sage" id="nc"><span class="k">' + (done === live.length - (lastM ? 1 : 0) && !lastM ? 'Próximo' : 'A seguir') + ' · ' + next.duration + '</span><b>' + next.title + '</b><span>' + next.tagline + '</span></div>'
+      : (done === live.length ? '<div class="mcard sage"><span class="k">Em breve</span><b>Próximo vídeo da Thamy</b><span>novos módulos entram aqui automaticamente</span></div>' : '');
+    if (next) $('nc').addEventListener('click', () => openModule(next.id));
+  }
+
+  /* module screen — fully generated from registry data */
+  function openModule(id) {
+    const m = MODULES.find(x => x.id === id);
+    if (!m || m.status !== 'live') return;
+    current = m; state.last = id; persist();
+    const s = $('s-module');
+    s.innerHTML = '<button class="back">‹ Início</button><h1>' + m.title + '</h1>' +
+      '<a class="cover" href="' + m.video + '" target="_blank" rel="noopener"><span class="play">▶</span><span>assistir o vídeo da Thamy · ' + m.duration + '</span></a>' +
+      '<p class="quote">' + m.quote + '</p>' +
+      m.fields.map(f => '<div class="field"><label for="f-' + f.key + '">' + f.label + '</label><input id="f-' + f.key + '" type="text" inputmode="numeric" placeholder="' + f.placeholder + '" autocomplete="off"></div>').join('') +
+      (m.advanced ? '<details><summary>Avançado: ' + m.advanced.label + '</summary><div class="field"><input id="f-' + m.advanced.key + '" type="text" inputmode="decimal" value="' + m.advanced.value + '"></div></details>' : '') +
+      '<button class="cta" id="ver" disabled>Ver meu número</button>';
+    s.querySelector('.back').addEventListener('click', () => { renderHome(); go('s-home'); });
+    m.fields.forEach(f => {
+      const inp = $('f-' + f.key);
+      inp.addEventListener('input', () => {
+        if (f.type === 'money') {
+          const raw = inp.value.replace(/[^\d]/g, '');
+          inp.value = raw ? 'R$ ' + fmtN.format(parseInt(raw, 10)) : '';
+        }
+        $('ver').disabled = !m.fields.every(x => $('f-' + x.key).value.replace(/[^\d]/g, ''));
+      });
+    });
+    $('ver').addEventListener('click', () => {
+      const v = {};
+      m.fields.forEach(f => { v[f.key] = parseInt($('f-' + f.key).value.replace(/[^\d]/g, ''), 10); });
+      if (m.advanced) v[m.advanced.key] = parseFloat($('f-' + m.advanced.key).value.replace(',', '.')) || m.advanced.value;
+      const r = m.compute(v);
+      sim = { module: m.id, title: m.title, inputs: v, total: r.total, ts: Date.now() };
+      $('rlbl').textContent = m.resultLabel;
+      $('ctx').textContent = r.ctx;
+      $('chip').textContent = r.chip;
+      $('salvar').textContent = 'Salvar';
+      go('s-result');
+      countUp(r.total);
+      burst();
+      if (navigator.vibrate) navigator.vibrate([18, 40, 24]);
+      state.done[m.id] = true; persist(); renderDrawer();
+    });
+    go('s-module');
+  }
+
   function countUp(total) {
     const el = $('big'), t0 = performance.now(), dur = 1100;
     function tick(t) {
@@ -325,32 +457,35 @@
     setTimeout(() => { box.innerHTML = ''; }, 2200);
   }
 
-  /* storage */
-  const KEY = 'meu-numero-sims';
-  const load = () => JSON.parse(localStorage.getItem(KEY) || '[]');
-  const store = (a) => localStorage.setItem(KEY, JSON.stringify(a));
+  /* saved numbers */
   $('salvar').addEventListener('click', () => {
     if (!sim) return;
-    const a = load(); a.unshift(sim); store(a);
+    state.sims.unshift(sim); persist();
     $('salvar').textContent = '✓ Salvo';
     if (navigator.vibrate) navigator.vibrate(12);
   });
-  function render() {
-    const a = load(), h = $('hist');
-    $('empty').style.display = a.length ? 'none' : 'block';
+  function renderHist() {
+    const h = $('hist');
+    $('empty').style.display = state.sims.length ? 'none' : 'block';
     h.innerHTML = '';
-    a.forEach((s, i) => {
+    state.sims.forEach((s, i) => {
       const d = new Date(s.ts);
       const el = document.createElement('div');
       el.className = 'hcard';
+      const mainInput = Object.values(s.inputs)[0];
       el.innerHTML = '<div><span class="d">' + d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }) +
-        ' · Fire Number</span><p class="r">' + fmt.format(s.m) + '/mês</p></div>' +
+        ' · ' + s.title + '</span><p class="r">' + fmt.format(mainInput) + '/mês</p></div>' +
         '<div><b>' + fmt.format(s.total) + '</b><button class="del" aria-label="apagar">×</button></div>';
-      el.querySelector('.del').addEventListener('click', () => { const b = load(); b.splice(i, 1); store(b); render(); });
+      el.querySelector('.del').addEventListener('click', () => { state.sims.splice(i, 1); persist(); renderHist(); });
       h.appendChild(el);
     });
   }
-  render();
+
+  /* device toggle */
+  $('dv-phone').addEventListener('click', () => { $('device').classList.remove('tablet'); $('dv-phone').classList.add('on'); $('dv-tablet').classList.remove('on'); });
+  $('dv-tablet').addEventListener('click', () => { $('device').classList.add('tablet'); $('dv-tablet').classList.add('on'); $('dv-phone').classList.remove('on'); });
+
+  renderDrawer(); renderHome(); renderHist();
 </script>
 </body>
 </html>
