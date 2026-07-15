@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finance app — status do projeto</title>
+<style>
+  :root {
+    --bg: #FAF8F3;
+    --surface: #FFFFFF;
+    --line: #E4E0D5;
+    --text: #1C2420;
+    --muted: #5C6660;
+    --accent: #C97F14;
+    --accent-soft: #F7EAD4;
+    --good: #2E7D5B;
+    --good-soft: #E3F0E9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1512;
+      --surface: #171F1B;
+      --line: #26312B;
+      --text: #E8EDE9;
+      --muted: #9AA69F;
+      --accent: #F2A33C;
+      --accent-soft: #2A2116;
+      --good: #5BBd8f;
+      --good-soft: #16261E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1512; --surface: #171F1B; --line: #26312B; --text: #E8EDE9;
+    --muted: #9AA69F; --accent: #F2A33C; --accent-soft: #2A2116;
+    --good: #5BBD8F; --good-soft: #16261E;
+  }
+  :root[data-theme="light"] {
+    --bg: #FAF8F3; --surface: #FFFFFF; --line: #E4E0D5; --text: #1C2420;
+    --muted: #5C6660; --accent: #C97F14; --accent-soft: #F7EAD4;
+    --good: #2E7D5B; --good-soft: #E3F0E9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55; margin: 0; padding: 2.5rem 1.25rem 4rem;
+  }
+  main { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.75rem; }
+  h1, h2, h3 { font-family: "Avenir Next", Avenir, Futura, -apple-system, sans-serif; text-wrap: balance; margin: 0; }
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.01em; }
+  h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.9rem; }
+  p { margin: 0; }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem;
+    color: var(--accent); font-weight: 600; margin-bottom: 0.5rem;
+  }
+  header .sub { color: var(--muted); margin-top: 0.6rem; max-width: 60ch; }
+  .pill {
+    display: inline-block; margin-top: 1rem; padding: 0.25rem 0.75rem;
+    border-radius: 999px; background: var(--good-soft); color: var(--good);
+    font-size: 0.8rem; font-weight: 600;
+  }
+  section > p { color: var(--muted); max-width: 62ch; }
+
+  .loop { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+  .loop-step {
+    display: flex; align-items: baseline; gap: 0.75rem;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 0.7rem 1rem;
+  }
+  .loop-step b { font-weight: 600; }
+  .loop-step .n {
+    font-family: "SF Mono", Menlo, monospace; font-size: 0.75rem;
+    color: var(--accent); flex-shrink: 0;
+  }
+
+  .calc {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1.5rem; margin-top: 1rem;
+  }
+  .calc label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.35rem; }
+  .calc input {
+    width: 100%; font-size: 1.35rem; font-weight: 600; color: var(--text);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.6rem 0.85rem; font-variant-numeric: tabular-nums;
+  }
+  .calc input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .calc .result { margin-top: 1.25rem; }
+  .calc .result .label { font-size: 0.8rem; color: var(--muted); }
+  .calc .result .value {
+    font-size: 2.1rem; font-weight: 700; color: var(--accent);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+    transition: opacity 0.2s;
+  }
+  .calc .note { font-size: 0.78rem; color: var(--muted); margin-top: 0.75rem; }
+
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .screen {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.9rem 1rem;
+  }
+  .screen b { display: block; font-weight: 600; font-size: 0.92rem; }
+  .screen span { font-size: 0.8rem; color: var(--muted); }
+
+  .stages { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; }
+  .stage {
+    display: flex; gap: 0.9rem; padding: 0.55rem 0; align-items: baseline;
+    border-bottom: 1px solid var(--line); font-size: 0.95rem;
+  }
+  .stage:last-child { border-bottom: none; }
+  .stage .mark { flex-shrink: 0; width: 1.4rem; text-align: center; font-size: 0.85rem; }
+  .stage.done { color: var(--muted); }
+  .stage.done .mark { color: var(--good); }
+  .stage.current { font-weight: 600; }
+  .stage.current .mark { color: var(--accent); }
+  .stage.todo { color: var(--muted); }
+  .stage.todo .mark { color: var(--line); }
+  .stage .tag {
+    margin-left: auto; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--accent); background: var(--accent-soft); border-radius: 999px;
+    padding: 0.1rem 0.6rem; font-weight: 600; flex-shrink: 0;
+  }
+
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .fact { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem 1rem; }
+  .fact .k { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .fact .v { font-weight: 600; margin-top: 0.2rem; font-size: 0.95rem; }
+
+  footer { color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">Finance app · status do projeto</p>
+    <h1>Os vídeos da Tami, transformados em ferramenta</h1>
+    <p class="sub">Cada vídeo vira um módulo no app: o conteúdo, uma calculadora
+    interativa do conceito ensinado e os resultados salvos da pessoa. Primeiro módulo:
+    o Fire Number.</p>
+    <span class="pill">Protótipo em construção · 15 jul 2026</span>
+  </header>
+
+  <section>
+    <h2>O core loop (menos de 30 segundos)</h2>
+    <div class="loop">
+      <div class="loop-step"><span class="n">01</span><p><b>Abrir o módulo</b> do vídeo que a Tami postou</p></div>
+      <div class="loop-step"><span class="n">02</span><p><b>Digitar os próprios números</b> (ex.: renda mensal desejada)</p></div>
+      <div class="loop-step"><span class="n">03</span><p><b>Ver o resultado na hora</b>, com animação e haptics</p></div>
+      <div class="loop-step"><span class="n">04</span><p><b>Salvar</b> — os números viram metas que trazem a pessoa de volta</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experimenta aqui: a calculadora do módulo 1</h2>
+    <div class="calc">
+      <label for="renda">Renda mensal desejada (R$)</label>
+      <input id="renda" type="text" inputmode="numeric" placeholder="15.000" autocomplete="off">
+      <div class="result">
+        <p class="label">Teu Fire Number</p>
+        <p class="value" id="fire">—</p>
+      </div>
+      <p class="note">Fórmula do vídeo: renda mensal × 12 × 25 (taxa segura de retirada
+      de 4% ao ano). É exatamente este loop que o app entrega no celular.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>As 4 telas do MVP</h2>
+    <div class="screens">
+      <div class="screen"><b>Home</b><span>lista de módulos, um card por vídeo</span></div>
+      <div class="screen"><b>Módulo</b><span>o vídeo + a calculadora do conceito</span></div>
+      <div class="screen"><b>Resultado</b><span>revelação animada + salvar</span></div>
+      <div class="screen"><b>Meus números</b><span>histórico das simulações</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Onde estamos na metodologia</h2>
+    <p>Seguindo o playbook do curso de 4h estudado hoje (Expo + React Native, Supabase
+    depois, IA via edge functions, App Store no fim).</p>
+    <ul class="stages">
+      <li class="stage done"><span class="mark">✓</span>Setup do ambiente (WAT + ways of working + vault)</li>
+      <li class="stage done"><span class="mark">✓</span>Estudo da metodologia (curso completo destilado)</li>
+      <li class="stage done"><span class="mark">✓</span>Ideação do MVP (as 5 perguntas)</li>
+      <li class="stage current"><span class="mark">●</span>Protótipo local, sem base de dados<span class="tag">agora</span></li>
+      <li class="stage todo"><span class="mark">○</span>Passe de design</li>
+      <li class="stage todo"><span class="mark">○</span>Testes em 3 níveis (browser → espelho → celular real)</li>
+      <li class="stage todo"><span class="mark">○</span>Supabase (dados + login)</li>
+      <li class="stage todo"><span class="mark">○</span>Features de IA</li>
+      <li class="stage todo"><span class="mark">○</span>Auditoria de segurança (2×)</li>
+      <li class="stage todo"><span class="mark">○</span>Deploy e App Store</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Como o trabalho está organizado</h2>
+    <div class="facts">
+      <div class="fact"><p class="k">Orquestrador</p><p class="v">Fable 5 — planeja, revisa e reporta</p></div>
+      <div class="fact"><p class="k">Construção do protótipo</p><p class="v">Worker Sonnet, em andamento</p></div>
+      <div class="fact"><p class="k">Memória</p><p class="v">Vault Obsidian no repo (estado, decisões, work logs)</p></div>
+      <div class="fact"><p class="k">Stack</p><p class="v">Expo + React Native + TypeScript</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Repo: github.com/gustavobragateya/finance-app · Gerado pelo Tonho em 15 jul 2026.
+    Próximo marco: protótipo rodando no celular via Expo Go.</p>
+  </footer>
+</main>
+
+<script>
+  const renda = document.getElementById('renda');
+  const fire = document.getElementById('fire');
+  const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+  renda.addEventListener('input', () => {
+    const raw = renda.value.replace(/[^\d]/g, '');
+    if (!raw) { fire.textContent = '—'; return; }
+    const n = parseInt(raw, 10);
+    renda.value = new Intl.NumberFormat('pt-BR').format(n);
+    fire.textContent = fmt.format(n * 12 * 25);
+  });
+</script>
+</body>
+</html>
