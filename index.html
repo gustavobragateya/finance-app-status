@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finance app — mockup para discussão</title>
+<style>
+  :root {
+    --page: #06090D;
+    --page-text: #F4F6F8;
+    --page-muted: #9AA6B2;
+    --bg: #0B0F14;
+    --surface: #141A21;
+    --raised: #1C242D;
+    --border: #2A333D;
+    --mint: #3DDC97;
+    --mint-dim: #26543F;
+    --text: #F4F6F8;
+    --text2: #9AA6B2;
+    --text3: #5F6B77;
+    --gold: #F5C065;
+    --danger: #E5484D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--page-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5; padding: 3rem 1.25rem 4rem;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header { max-width: 640px; margin-bottom: 3rem; }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem;
+    color: var(--mint); font-weight: 600; margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: "Avenir Next", Avenir, Futura, sans-serif;
+    font-size: 1.9rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; text-wrap: balance;
+  }
+  header p { color: var(--page-muted); margin: 0.75rem 0 0; max-width: 58ch; }
+
+  .frames {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 2.25rem; align-items: start;
+  }
+  .slot { display: flex; flex-direction: column; gap: 1rem; }
+  .phone {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 38px;
+    padding: 12px; box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .screen {
+    background: var(--bg); border-radius: 28px; overflow: hidden;
+    height: 580px; display: flex; flex-direction: column; position: relative;
+  }
+  .notch {
+    width: 110px; height: 22px; background: #000; border-radius: 999px;
+    margin: 8px auto 0; flex-shrink: 0;
+  }
+  .app { flex: 1; padding: 1.1rem 1.1rem 0.9rem; display: flex; flex-direction: column; gap: 0.9rem; overflow: hidden; }
+  .app h2 { font-size: 1.25rem; margin: 0; font-weight: 700; color: var(--text); }
+  .app .sub { font-size: 0.8rem; color: var(--text2); margin: -0.5rem 0 0; }
+
+  .annot { padding: 0 0.5rem; }
+  .annot b { display: block; font-size: 0.9rem; color: var(--page-text); }
+  .annot span { font-size: 0.82rem; color: var(--page-muted); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 0.9rem 1rem;
+  }
+  .module-card .tag {
+    display: inline-block; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--mint); background: var(--mint-dim); border-radius: 999px; padding: 0.15rem 0.55rem;
+    font-weight: 700; margin-bottom: 0.5rem;
+  }
+  .module-card b { display: block; color: var(--text); font-size: 0.95rem; }
+  .module-card span { font-size: 0.78rem; color: var(--text2); }
+  .module-card.ghost { opacity: 0.45; border-style: dashed; }
+
+  .video {
+    background: linear-gradient(160deg, #10161d, #1a232d); border: 1px solid var(--border);
+    border-radius: 14px; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.4rem; flex-shrink: 0;
+  }
+  .video .play {
+    width: 42px; height: 42px; border-radius: 999px; background: var(--mint);
+    display: flex; align-items: center; justify-content: center; color: #06090D; font-size: 1rem;
+  }
+  .video span { font-size: 0.72rem; color: var(--text2); }
+
+  label { font-size: 0.72rem; color: var(--text2); display: block; margin-bottom: 0.3rem; }
+  input {
+    width: 100%; background: var(--raised); border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text); font-size: 1.15rem; font-weight: 600; padding: 0.6rem 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+  input:focus { outline: 2px solid var(--mint); border-color: var(--mint); }
+  .advanced { font-size: 0.72rem; color: var(--text3); }
+
+  .btn {
+    background: var(--mint); color: #06090D; font-weight: 700; font-size: 0.95rem;
+    border: none; border-radius: 12px; padding: 0.8rem; width: 100%; cursor: pointer;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn.ghost { background: transparent; color: var(--mint); border: 1px solid var(--mint-dim); }
+
+  .reveal { text-align: center; margin: auto 0; }
+  .reveal .lbl { font-size: 0.78rem; color: var(--text2); }
+  .reveal .big {
+    font-size: 2.2rem; font-weight: 800; color: var(--mint); letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums; margin: 0.2rem 0;
+  }
+  .reveal .ctx { font-size: 0.75rem; color: var(--text3); max-width: 30ch; margin: 0 auto; }
+
+  .hist { display: flex; flex-direction: column; gap: 0.6rem; overflow: hidden; }
+  .hist .card { display: flex; justify-content: space-between; align-items: baseline; }
+  .hist .card b { color: var(--mint); font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+  .hist .card div span { display: block; font-size: 0.7rem; color: var(--text3); }
+  .hist .card div p { margin: 0; font-size: 0.8rem; color: var(--text); }
+
+  .tabbar {
+    display: flex; border-top: 1px solid var(--border); padding: 0.6rem 0 0.4rem;
+    justify-content: space-around; flex-shrink: 0; background: var(--bg);
+  }
+  .tabbar span { font-size: 0.65rem; color: var(--text3); text-align: center; }
+  .tabbar span.on { color: var(--mint); font-weight: 600; }
+
+  footer { margin-top: 3.5rem; color: var(--page-muted); font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 1.25rem; }
+  footer a { color: var(--mint); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Finance app · mockup v1 para discussão</p>
+    <h1>As 4 telas do MVP, com o reel do Fire Number como primeiro módulo</h1>
+    <p>Interativo onde importa: digita uma renda na tela 2 e o resultado da tela 3
+    atualiza. Visual segue o protótipo real já construído (dark, acento mint).</p>
+  </header>
+
+  <div class="frames">
+
+    <div class="slot">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="app">
+          <h2>Módulos</h2>
+          <p class="sub">Um card por vídeo da Tami</p>
+          <div class="card module-card">
+            <span class="tag">Novo</span>
+            <b>🔥 Fire Number</b>
+            <span>Quanto você precisa ter investido para viver de renda</span>
+          </div>
+          <div class="card module-card ghost">
+            <b>Próximo vídeo…</b>
+            <span>cada post vira um módulo novo aqui</span>
+          </div>
+        </div>
+        <div class="tabbar"><span class="on">● Módulos</span><span>○ Meus números</span></div>
+      </div></div>
+      <div class="annot"><b>1 · Home</b><span>Lista de módulos. O registry já aceita novos vídeos sem mudança estrutural.</span></div>
+    </div>
+
+    <div class="slot">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="app">
+          <h2>Fire Number</h2>
+          <div class="video"><div class="play">▶</div><span>reel da Tami (1:15)</span></div>
+          <p class="sub">Aposentadoria é um número, não uma idade: renda mensal × 12 × 25.</p>
+          <div>
+            <label for="renda">Renda mensal desejada (R$)</label>
+            <input id="renda" type="text" inputmode="numeric" placeholder="15.000" autocomplete="off">
+          </div>
+          <p class="advanced">Avançado: taxa de retirada 4% ›</p>
+          <button class="btn" id="ver">Ver meu Fire Number</button>
+        </div>
+        <div class="tabbar"><span class="on">● Módulos</span><span>○ Meus números</span></div>
+      </div></div>
+      <div class="annot"><b>2 · Módulo</b><span>Vídeo + conceito + calculadora. Digita aqui e olha a tela 3 atualizar.</span></div>
+    </div>
+
+    <div class="slot">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="app">
+          <h2>Resultado</h2>
+          <div class="reveal">
+            <p class="lbl">Teu Fire Number</p>
+            <p class="big" id="fire">R$ 4.500.000</p>
+            <p class="ctx" id="ctx">para viver com R$ 15.000/mês retirando 4% ao ano</p>
+          </div>
+          <button class="btn" id="salvar">Salvar</button>
+          <button class="btn ghost">Compartilhar</button>
+        </div>
+        <div class="tabbar"><span class="on">● Módulos</span><span>○ Meus números</span></div>
+      </div></div>
+      <div class="annot"><b>3 · Resultado</b><span>Revelação com count-up, confete e haptics no app real. Salvar grava no histórico (tela 4).</span></div>
+    </div>
+
+    <div class="slot">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="app">
+          <h2>Meus números</h2>
+          <p class="sub">Tuas simulações salvas</p>
+          <div class="hist" id="hist">
+            <div class="card"><div><span>15 jul · Fire Number</span><p>R$ 15.000/mês</p></div><b>R$ 4,5M</b></div>
+            <div class="card"><div><span>15 jul · Fire Number</span><p>R$ 8.000/mês</p></div><b>R$ 2,4M</b></div>
+          </div>
+        </div>
+        <div class="tabbar"><span>○ Módulos</span><span class="on">● Meus números</span></div>
+      </div></div>
+      <div class="annot"><b>4 · Meus números</b><span>Histórico local (AsyncStorage). Números salvos viram metas: o gancho de retenção.</span></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Mockup para discussão · o protótipo funcional já existe no repo (Expo + React
+    Native, roda no celular via Expo Go) · <a href="status.html">página de status do projeto</a></p>
+  </footer>
+</div>
+
+<script>
+  const renda = document.getElementById('renda');
+  const fire = document.getElementById('fire');
+  const ctx = document.getElementById('ctx');
+  const salvar = document.getElementById('salvar');
+  const hist = document.getElementById('hist');
+  const fmtFull = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+  const fmtBR = new Intl.NumberFormat('pt-BR');
+  let atual = { renda: 15000, fire: 4500000 };
+
+  function compact(n) {
+    if (n >= 1e6) return 'R$ ' + fmtBR.format(Math.round(n / 1e5) / 10) + 'M';
+    if (n >= 1e3) return 'R$ ' + fmtBR.format(Math.round(n / 1e3)) + ' mil';
+    return fmtFull.format(n);
+  }
+  renda.addEventListener('input', () => {
+    const raw = renda.value.replace(/[^\d]/g, '');
+    if (!raw) return;
+    const n = parseInt(raw, 10);
+    renda.value = fmtBR.format(n);
+    atual = { renda: n, fire: n * 12 * 25 };
+    fire.textContent = fmtFull.format(atual.fire);
+    ctx.textContent = 'para viver com ' + fmtFull.format(n) + '/mês retirando 4% ao ano';
+  });
+  document.getElementById('ver').addEventListener('click', () => {
+    fire.style.transition = 'none'; fire.style.opacity = '0';
+    requestAnimationFrame(() => { fire.style.transition = 'opacity 0.6s'; fire.style.opacity = '1'; });
+  });
+  salvar.addEventListener('click', () => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<div><span>15 jul · Fire Number</span><p>' + fmtFull.format(atual.renda) +
+      '/mês</p></div><b>' + compact(atual.fire) + '</b>';
+    hist.prepend(card);
+    salvar.textContent = '✓ Salvo';
+    setTimeout(() => { salvar.textContent = 'Salvar'; }, 1500);
+  });
+</script>
+</body>
+</html>
